@@ -1,0 +1,34 @@
+@page "/events"
+@using EventEase.Models
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using EventEase.Components  <!-- Ensure you have the correct namespace for EventCard -->
+
+<h2>Event List</h2>
+
+@if (events == null || !events.Any())
+{
+    <p>Loading events...</p>  <!-- You can customize this to show a spinner or placeholder -->
+}
+else
+{
+    <Virtualize Items="events" Context="ev">
+        <EventCard EventDetails="ev" @key="ev.Id" />
+    </Virtualize>
+}
+
+@code {
+    private List<Event> events;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate loading events asynchronously
+        await Task.Delay(500);  // Simulating network delay
+        events = new List<Event>
+        {
+            new Event { Id = 1, Name = "Corporate Gala", Date = new DateTime(2025, 12, 5), Location = "New York City" },
+            new Event { Id = 2, Name = "Tech Conference", Date = new DateTime(2025, 11, 20), Location = "San Francisco" },
+            new Event { Id = 3, Name = "Music Festival", Date = new DateTime(2025, 9, 15), Location = "Los Angeles" },
+            // More events here
+        };
+    }
+}

@@ -1,0 +1,31 @@
+@using EventEase.Models
+@code {
+    [Parameter, EditorRequired]
+    public Event EventDetails { get; set; }
+}
+
+@if (EventDetails == null)
+{
+    <p><em>Event data is not available.</em></p>
+}
+else if (string.IsNullOrWhiteSpace(EventDetails.Name))
+{
+    <p><em>Event name is missing.</em></p>
+}
+else if (EventDetails.Date == DateTime.MinValue)
+{
+    <p><em>Event date is missing or invalid.</em></p>
+}
+else if (string.IsNullOrWhiteSpace(EventDetails.Location))
+{
+    <p><em>Event location is missing.</em></p>
+}
+else
+{
+    <div class="event-card" style="border: 1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
+        <h3>@EventDetails.Name</h3>
+        <p><strong>Date:</strong> @(EventDetails.Date != DateTime.MinValue ? EventDetails.Date.ToShortDateString() : "Date not set")</p>
+        <p><strong>Location:</strong> @(!string.IsNullOrEmpty(EventDetails.Location) ? EventDetails.Location : "Location unknown")</p>
+        <NavLink href="/events/@EventDetails.Id">View Details</NavLink>
+    </div>
+}

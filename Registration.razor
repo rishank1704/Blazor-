@@ -1,0 +1,61 @@
+@page "/registration/{eventId:int}"
+@using EventEase.Models
+@inject NavigationManager NavigationManager
+
+<h2>Event Registration</h2>
+
+@if (currentEvent == null)
+{
+    <p>Loading event for registration...</p>
+}
+else
+{
+    <p>Registering for: <strong>@currentEvent.Name</strong></p>
+
+    <!-- Simple registration form -->
+    <EditForm Model="registrationModel" OnValidSubmit="HandleValidSubmit">
+        <InputText @bind-Value="registrationModel.FullName" placeholder="Full Name" />
+        <br />
+        <InputText @bind-Value="registrationModel.Email" placeholder="Email" />
+        <br />
+        <button type="submit">Submit Registration</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int eventId { get; set; }
+
+    private Event currentEvent;
+
+    private RegistrationModel registrationModel = new();
+
+    private List<Event> events = new()
+    {
+        new Event { Id = 1, Name = "Corporate Gala", Date = new DateTime(2025, 12, 5), Location = "New York City" },
+        new Event { Id = 2, Name = "Tech Conference", Date = new DateTime(2025, 11, 20), Location = "San Francisco" },
+        new Event { Id = 3, Name = "Music Festival", Date = new DateTime(2025, 9, 15), Location = "Los Angeles" }
+    };
+
+    protected override void OnInitialized()
+    {
+        currentEvent = events.FirstOrDefault(e => e.Id == eventId);
+        if (currentEvent == null)
+        {
+            NavigationManager.NavigateTo("/events");
+        }
+    }
+
+    private void HandleValidSubmit()
+    {
+        // Handle registration logic here
+        Console.WriteLine($"Registered {registrationModel.FullName} for {currentEvent.Name}");
+        NavigationManager.NavigateTo("/events");
+    }
+
+    public class RegistrationModel
+    {
+        public string FullName { get; set; }
+        public string Email { get; set; }
+    }
+}

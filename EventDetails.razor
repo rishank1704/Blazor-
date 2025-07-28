@@ -1,0 +1,40 @@
+@page "/events/{eventId:int}"
+@using EventEase.Models
+@inject NavigationManager NavigationManager
+
+@if (currentEvent == null)
+{
+    <p><em>Event not found. Redirecting...</em></p>
+}
+else
+{
+    <h3>@currentEvent.Name</h3>
+    <p><strong>Date:</strong> @currentEvent.Date.ToLongDateString()</p>
+    <p><strong>Location:</strong> @currentEvent.Location</p>
+    <NavLink href="/registration/@currentEvent.Id">Register</NavLink>
+}
+
+@code {
+    [Parameter]
+    public int eventId { get; set; }
+
+    private Event currentEvent;
+
+    private List<Event> events = new()
+    {
+        new Event { Id = 1, Name = "Corporate Gala", Date = new DateTime(2025, 12, 5), Location = "New York City" },
+        new Event { Id = 2, Name = "Tech Conference", Date = new DateTime(2025, 11, 20), Location = "San Francisco" },
+        new Event { Id = 3, Name = "Music Festival", Date = new DateTime(2025, 9, 15), Location = "Los Angeles" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentEvent = events.FirstOrDefault(e => e.Id == eventId);
+        
+        if (currentEvent == null)
+        {
+            await Task.Delay(1500);
+            NavigationManager.NavigateTo("/events", forceLoad: true);
+        }
+    }
+}
